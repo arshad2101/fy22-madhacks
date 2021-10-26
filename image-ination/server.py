@@ -47,6 +47,8 @@ import os
 from stat import S_IREAD
 import cv2
 from skimage.metrics import structural_similarity as compare_ssim
+from flask import render_template
+
 
 test_batchsize = 16
 image_size = 256
@@ -108,9 +110,10 @@ def api_root():
             os.chmod(saved_path, S_IREAD)
             isAnamoly = anamolyDetector(saved_path)
             if isAnamoly:
-              data = {}
-              data['null'] = ['Uploaded Image is not valid Mammography']
-              return json.dumps(data, indent=4) 
+              #strHTMLError = '<html><html><head> <title></title> <style type="text/css"> body{background-image: url('cancer-cells.jpg'); background-size: cover}.aa{font-family: monospace; width: 300px; height: 320px; background-color: rgba(0,0,0,0.5); margin: 0 auto; margin-top: 50px; padding-top: 10px;padding-bottom: 10px; padding-left: 50px; padding-right: 50px; border-radius: 15px; color: white; font-weight: bolder; box-shadow: inset -4px -4px rgba(0,0,0,0.5)}</style> </head> <body><div class="aa"> <h2><center>Uploaded Image is not valid Mammography<center></h2><h1><center>Please upload a valid image</center></h1></body> <center> <input type="image" src="error.png" width="150" height="150"></center> </div></html>'
+              #data = {}
+              #data['null'] = ['Uploaded Image is not valid Mammography']
+              return render_template("error.html")#json.dumps(data, indent=4) 
             predicted_classes = predict(operator, patientId,actual, img_name,UPLOAD_FOLDER)
             return predicted_classes
         else:

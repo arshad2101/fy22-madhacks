@@ -198,40 +198,7 @@ def custome_architecture():
     
 
 
-def make_convolutional_autoencoder():
-    # encoding
-    inputs = Input(shape=(image_size, image_size, 1))
-    x = Conv2D(16, 3, activation='relu', padding='same')(inputs)
-    x = MaxPooling2D(padding='same')(x)
-    x = Conv2D( 8, 3, activation='relu', padding='same')(x)
-    x = MaxPooling2D(padding='same')(x)
-    x = Conv2D( 8, 3, activation='relu', padding='same')(x)
-    encoded = MaxPooling2D(padding='same')(x)    
-    
-    # decoding
-    x = Conv2D( 8, 3, activation='relu', padding='same')(encoded)
-    x = UpSampling2D()(x)
-    x = Conv2D( 8, 3, activation='relu', padding='same')(x)
-    x = UpSampling2D()(x)
-    x = Conv2D(16, 3, activation='relu')(x) # <= padding='valid'!
-    x = UpSampling2D()(x)
-    decoded = Conv2D(1, 3, activation='sigmoid', padding='same')(x)
-    
-    # autoencoder
-    autoencoder = Model(inputs, decoded)
-    autoencoder.compile(optimizer='adam', 
-                        loss='binary_crossentropy')
-    history = autoencoder.fit_generator(train_generator,
- 				  use_multiprocessing=True,
-                                  workers=18,
-                                  steps_per_epoch=train_generator.samples / train_generator.batch_size,
-                                  validation_data = validation_generator, 
-                                  validation_steps = validation_generator.samples // validation_generator.batch_size,
-                                  epochs=epochs,
-                                  verbose=1,
-                                 )
 
-    return autoencoder
 
 def lr_schedule(epoch):
     lr = 1e-3
@@ -288,8 +255,8 @@ def train(model):
     class_weights = dict(enumerate(class_weights))
     print('Started training...')
     history = model.fit_generator(train_generator,
- 				  use_multiprocessing=True,
-                                  workers=18,
+ 				  #use_multiprocessing=True,
+                   #               workers=18,
                                   steps_per_epoch=train_generator.samples / train_generator.batch_size,
                                   validation_data = validation_generator, 
                                   validation_steps = validation_generator.samples // validation_generator.batch_size,
@@ -346,10 +313,10 @@ def show_graphs(history):
 
 def Main():
 
-    create a convolutional autoencoder
-    autoencoder  = make_convolutional_autoencoder()
-    X_test_decoded = autoencoder.predict(X_test_noisy)
-    print(X_test_decoded)
+    #create a convolutional autoencoder
+    #autoencoder  = make_convolutional_autoencoder()
+    #X_test_decoded = autoencoder.predict(X_test_noisy)
+    #print(X_test_decoded)
     model = residual_network_tuned()
 
     print("epochs, train_batchsize", epochs, train_batchsize)
